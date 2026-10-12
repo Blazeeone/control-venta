@@ -1,0 +1,18 @@
+{% extends 'ventas/base.html' %}
+{% block title %}{{ object.nombre }} | Control de Ventas{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">Producto</span>
+    <h1>{{ object.nombre }}</h1>
+    <p>Detalle del producto y disponibilidad actual.</p>
+  </div>
+  <a href="{% url 'registrar_venta' object.pk %}" class="btn btn-primary">Registrar venta</a>
+</div>
+<div class="detail-card">
+  <div><span>Código</span><strong>{{ object.codigo|default:object.sku|default:"Sin código" }}</strong></div>
+  <div><span>Precio</span><strong>${{ object.precio }}</strong></div>
+  <div><span>Stock</span><strong>{{ object.stock }}</strong></div>
+  <div><span>Estado</span><strong>{{ object.activo|yesno:"Activo,Inactivo" }}</strong></div>
+</div>
+{% endblock %}
