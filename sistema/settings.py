@@ -41,10 +41,12 @@ configured_hosts = os.getenv(
     "DJANGO_ALLOWED_HOSTS",
     "control-de-venta-b-sico.vercel.app,localhost,127.0.0.1",
 )
-ALLOWED_HOSTS = ['*']
-
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.vercel.app',
+ALLOWED_HOSTS = [
+    'control-venta-tshi.vercel.app',          
+    'control-de-venta-b-sico.vercel.app', 
+    'control-venta-3zo3sal8d-tshi.vercel.app',
+    'localhost', 
+    '127.0.0.1', 
 ]
 vercel_url = os.getenv("VERCEL_URL")
 if vercel_url and vercel_url not in ALLOWED_HOSTS:
