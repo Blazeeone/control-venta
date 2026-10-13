@@ -37,20 +37,28 @@ DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in {"1", "true", "yes"}
 if not DEBUG and SECRET_KEY == "django-insecure-development-only-change-me":
     raise ImproperlyConfigured("DJANGO_SECRET_KEY must be configured in production.")
 
+configured_hosts = os.getenv(
+    "DJANGO_ALLOWED_HOSTS",
+    "control-de-venta-b-sico.vercel.app,localhost,127.0.0.1",
+)
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.getenv(
-        "DJANGO_ALLOWED_HOSTS",
-        "control-de-venta-b-sico.vercel.app,localhost,127.0.0.1",
-    ).split(",")
+    for host in configured_hosts.split(",")
     if host.strip()
 ]
+vercel_url = os.getenv("VERCEL_URL")
+if vercel_url and vercel_url not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(vercel_url)
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
     if origin.strip()
 ]
+if vercel_url:
+    vercel_origin = f"https://{vercel_url}"
+    if vercel_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(vercel_origin)
 
 
 # Application definition

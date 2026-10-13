@@ -1161,7 +1161,7 @@ a.deletelink:hover {
 /* SIDEBAR */
 
 #content-related {
-    background: var(--darkened-bg);
+    background: #000000;
 }
 
 #content-related .module {

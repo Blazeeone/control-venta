@@ -1,0 +1,66 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <div id="content-main">
+    <div class="module">
+      <h2>Reporte de ventas por rango de fechas</h2>
+      <form method="get" class="form-row">
+        <label for="id_desde">Desde</label>
+        <input id="id_desde" type="date" name="desde" value="{{ fecha_desde }}">
+        <label for="id_hasta">Hasta</label>
+        <input id="id_hasta" type="date" name="hasta" value="{{ fecha_hasta }}">
+        <button type="submit" class="default">Consultar</button>
+      </form>
+    </div>
+
+    {% if errores %}
+      <ul class="messagelist">
+        {% for error in errores %}
+          <li class="error">{{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <div class="module">
+      <h2>Resumen</h2>
+      <table>
+        <tr>
+          <th>Ventas encontradas</th>
+          <td>{{ cantidad_ventas }}</td>
+        </tr>
+        <tr>
+          <th>Total vendido</th>
+          <td>${{ total_ventas|floatformat:0 }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="module">
+      <h2>Detalle de ventas</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Anulada</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for venta in ventas %}
+            <tr>
+              <td>{{ venta.id }}</td>
+              <td>{{ venta.cliente }}</td>
+              <td>{{ venta.fecha }}</td>
+              <td>{{ venta.anulada|yesno:"Sí,No" }}</td>
+              <td>${{ venta.total|floatformat:0 }}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5">No hay ventas para el rango seleccionado.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

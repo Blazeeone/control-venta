@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Control de Ventas{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'ventas/admin.css' %}">
+{% endblock %}
+
+{% block extrahead %}
+  {{ block.super }}
+{% endblock %}
+
+{% block branding %}
+  <div class="admin-brand">
+    <span class="admin-brand__mark" aria-hidden="true">CV</span>
+    <div>
+      <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">Control de Ventas</a>
+      </h1>
+      <span class="admin-brand__subtitle">Panel interno</span>
+    </div>
+  </div>
+{% endblock %}
+
+{% block userlinks %}
+  {% if site_url %}
+    <a href="{{ site_url }}">Ver sitio</a> /
+  {% endif %}
+  {% if user.has_usable_password %}
+    <a href="{% url 'admin:password_change' %}">Cambiar contraseña</a> /
+  {% endif %}
+  <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+    {% csrf_token %}
+    <button type="submit">Cerrar sesión</button>
+  </form>
+{% endblock %}
