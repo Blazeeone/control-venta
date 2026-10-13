@@ -42,9 +42,9 @@ configured_hosts = os.getenv(
     "control-de-venta-b-sico.vercel.app,localhost,127.0.0.1",
 )
 ALLOWED_HOSTS = [
-    host.strip()
-    for host in configured_hosts.split(",")
-    if host.strip()
+    '.vercel.app', 
+    'localhost', 
+    '127.0.0.1', 
 ]
 vercel_url = os.getenv("VERCEL_URL")
 if vercel_url and vercel_url not in ALLOWED_HOSTS:
