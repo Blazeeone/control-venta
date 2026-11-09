@@ -25,7 +25,7 @@ Aplicación web desarrollada en Django para la digitalización y gestión de ven
 
 1. Clonar este repositorio.
 2. Crear y activar el entorno virtual (`python -m venv .venv`).
-3. Instalar las dependencias (`pip install -r requirements.txt`).
+3. Instalar las dependencias usando el intérprete de Python (`python -m pip install -r requirements.txt`). Esto funciona aunque el sistema no tenga creado el alias `pip3`.
 4. Crear un archivo `.env` (no se sube a Git) con una conexión PostgreSQL:
 
 ```env
@@ -112,6 +112,13 @@ ocasionales, actualización de stock, subtotal, validación del inline y CSV.
 Los logs de Django se envían a la salida estándar, que queda disponible en los
 logs operativos de Vercel.
 
+> **Google AI Studio:** este proyecto es un backend Django/Python. Si el entorno
+> de exportación muestra `pip3: executable file not found in $PATH`, no es un
+> error de la aplicación: ese entorno no incluye el comando `pip3`. Usa AI
+> Studio para el frontend y despliega este backend en Vercel, que detecta
+> `requirements.txt` automáticamente. En un entorno Python, instala con
+> `python -m pip install -r requirements.txt` (o `python3 -m pip ...` en Linux).
+
 ## Presentación de resultados
 
 Para demostrar el flujo completo:
@@ -146,8 +153,3 @@ por ejemplo, el endpoint de productos es
 ## Autor
 
 Yoshua Alberto Castillo Martínez
-1. Clonar este repositorio.
-2. Crear y activar el entorno virtual (`python -m venv venv`).
-3. Instalar las dependencias (`pip install django`).
-4. Aplicar las migraciones de la base de datos (`python manage.py migrate`).
-5. Levantar el servidor de desarrollo (`python manage.py runserver`).
