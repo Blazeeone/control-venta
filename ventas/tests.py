@@ -4,6 +4,7 @@ from django.forms.models import inlineformset_factory
 from django.test import TestCase
 from django.urls import reverse
 from django.test import RequestFactory
+from django.contrib.auth import get_user_model
 
 from .admin import DetalleVentaInlineFormSet, exportar_ventas_csv
 from .models import Cliente, DetalleVenta, Producto, Venta
@@ -11,6 +12,10 @@ from .models import Cliente, DetalleVenta, Producto, Venta
 
 class ControlVentaTests(TestCase):
     def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="api-user",
+            password="secure-password",
+        )
         self.producto = Producto.objects.create(
             nombre="Teclado",
             sku="TEC-001",
@@ -119,6 +124,36 @@ class ControlVentaTests(TestCase):
         self.assertEqual(response.context["page_obj"].number, 2)
         self.assertTrue(response.context["page_obj"].has_previous())
 
+    def test_listado_publico_muestra_ventas_y_total(self):
+        venta = Venta.objects.create(cliente=self.cliente)
+        DetalleVenta.objects.create(
+            venta=venta,
+            producto=self.producto,
+            cantidad=2,
+            precio_unitario=Decimal("10000.00"),
+        )
+
+        response = self.client.get(reverse("ventas_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f"Venta #{venta.pk}")
+        self.assertContains(response, "20000")
+
+    def test_detalle_publico_muestra_productos_de_la_venta(self):
+        venta = Venta.objects.create(cliente=self.cliente)
+        DetalleVenta.objects.create(
+            venta=venta,
+            producto=self.producto,
+            cantidad=2,
+            precio_unitario=Decimal("10000.00"),
+        )
+
+        response = self.client.get(reverse("venta_detail", args=[venta.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Teclado")
+        self.assertContains(response, "Ana Pérez")
+
     def test_eliminar_producto_sin_ventas(self):
         response = self.client.post(
             reverse("producto_delete", args=[self.producto.pk]),
@@ -201,3 +236,89 @@ class ControlVentaTests(TestCase):
         self.assertIn("ID,Cliente,Fecha,Anulada,Total", content)
         self.assertIn("Ana Pérez", content)
         self.assertIn("20000.00", content)
+
+    def test_api_requiere_autenticacion(self):
+        response = self.client.get("/api/productos/")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_api_jwt_permite_consultar_productos(self):
+        token_response = self.client.post(
+            "/api/token/",
+            {"username": "api-user", "password": "secure-password"},
+            content_type="application/json",
+        )
+        self.assertEqual(token_response.status_code, 200)
+        token = token_response.json()["access"]
+
+        response = self.client.get(
+            "/api/productos/",
+            HTTP_AUTHORIZATION=f"Bearer {token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]["nombre"], "Teclado")
+
+    def test_api_serializer_expone_venta_con_detalles(self):
+        venta = Venta.objects.create(cliente=self.cliente)
+        DetalleVenta.objects.create(
+            venta=venta,
+            producto=self.producto,
+            cantidad=2,
+            precio_unitario=Decimal("10000.00"),
+        )
+        token_response = self.client.post(
+            "/api/token/",
+            {"username": "api-user", "password": "secure-password"},
+            content_type="application/json",
+        )
+        token = token_response.json()["access"]
+
+        response = self.client.get(
+            "/api/ventas/",
+            HTTP_AUTHORIZATION=f"Bearer {token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]["total"], "20000.00")
+        self.assertEqual(response.json()[0]["detalles"][0]["cantidad"], 2)
+
+    def test_api_productos_permite_crud_autenticado(self):
+        token_response = self.client.post(
+            "/api/token/",
+            {"username": "api-user", "password": "secure-password"},
+            content_type="application/json",
+        )
+        token = token_response.json()["access"]
+        headers = {"HTTP_AUTHORIZATION": f"Bearer {token}"}
+
+        created = self.client.post(
+            "/api/productos/",
+            {
+                "nombre": "Mouse API",
+                "sku": "MOU-API",
+                "codigo": "",
+                "precio": "5000.00",
+                "stock": 4,
+                "activo": True,
+            },
+            content_type="application/json",
+            **headers,
+        )
+        self.assertEqual(created.status_code, 201)
+        product_id = created.json()["id"]
+
+        updated = self.client.patch(
+            f"/api/productos/{product_id}/",
+            {"stock": 8},
+            content_type="application/json",
+            **headers,
+        )
+        self.assertEqual(updated.status_code, 200)
+        self.assertEqual(updated.json()["stock"], 8)
+
+        deleted = self.client.delete(
+            f"/api/productos/{product_id}/",
+            **headers,
+        )
+        self.assertEqual(deleted.status_code, 204)

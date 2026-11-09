@@ -1,12 +1,58 @@
 from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.views.decorators.csrf import csrf_protect
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from .models import Producto, Cliente, Venta, DetalleVenta
 from .forms import ProductoForm, RegistrarVentaForm
+
+
+def api_client(request):
+    return render(request, "ventas/api_client.html")
+
+
+def ventas_list(request):
+    """Muestra el historial de ventas registradas."""
+    ventas = (
+        Venta.objects.select_related("cliente")
+        .prefetch_related("detalles__producto")
+        .order_by("-fecha", "-pk")
+    )
+    consulta = request.GET.get("q", "").strip()
+    if consulta:
+        ventas = ventas.filter(
+            Q(cliente__rut__icontains=consulta)
+            | Q(cliente__nombre__icontains=consulta)
+            | Q(detalles__producto__nombre__icontains=consulta)
+            | Q(pk__icontains=consulta)
+        ).distinct()
+
+    paginator = Paginator(ventas, 10)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    total_periodo = sum((venta.total for venta in page_obj.object_list), 0)
+    return render(
+        request,
+        "ventas/venta_list.html",
+        {
+            "object_list": page_obj.object_list,
+            "page_obj": page_obj,
+            "consulta": consulta,
+            "total_periodo": total_periodo,
+        },
+    )
+
+
+def venta_detail(request, pk):
+    venta = get_object_or_404(
+        Venta.objects.select_related("cliente").prefetch_related(
+            "detalles__producto"
+        ),
+        pk=pk,
+    )
+    return render(request, "ventas/venta_detail.html", {"venta": venta})
 
 # READ (list): Mostrar listado de productos disponibles
 def producto_list(request):

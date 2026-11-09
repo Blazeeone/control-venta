@@ -5,6 +5,9 @@ urlpatterns = [
     # Esta línea soluciona el error 404 cargando el listado en la ruta principal
     path('', views.producto_list, name='inicio'),
     path('productos/', views.producto_list, name='producto_list'),
+    path('ventas/', views.ventas_list, name='ventas_list'),
+    path('ventas/<int:pk>/', views.venta_detail, name='venta_detail'),
+    path('cliente-api/', views.api_client, name='api_client'),
     path('productos/nuevo', views.producto_create, name='producto_create'),
     path('productos/<int:pk>/', views.producto_detail, name='producto_detail'),
     path('productos/<int:pk>/editar/', views.producto_update, name='producto_update'),

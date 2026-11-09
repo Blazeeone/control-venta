@@ -64,6 +64,15 @@ tr:hover td { background: rgba(139, 124, 255, .06); }
 .btn-cancel { background: var(--surface-raised); color: var(--muted); }
 .table-card .btn { margin: 2px; }
 .form-card { max-width: 720px; padding: 30px; }
+.search-card { background: rgba(21, 27, 40, .92); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 18px; padding: 18px 22px; }
+.api-status { background: rgba(139, 124, 255, .12); border: 1px solid rgba(139, 124, 255, .35); border-radius: 10px; color: var(--text); margin-bottom: 18px; padding: 12px 15px; }
+.search-card label { margin-bottom: 5px; }
+.search-row { align-items: center; display: flex; gap: 10px; }
+.search-row input { margin: 0; }
+.sales-summary { margin-bottom: 18px; }
+.sales-summary > div { background: rgba(21, 27, 40, .92); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; }
+.sales-detail-table { margin-top: 22px; }
+.total-row th { border-top: 1px solid var(--primary); color: var(--text); }
 form p { margin-bottom: 18px; }
 label { color: var(--muted); display: block; font-size: .9rem; font-weight: 600; margin-bottom: 7px; }
 input, select, textarea { background: #070707; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font: inherit; margin-bottom: 14px; padding: 11px 12px; width: 100%; }

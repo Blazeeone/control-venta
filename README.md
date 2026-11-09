@@ -74,6 +74,10 @@ python manage.py runserver
 * Stock protegido mediante transacción y bloqueo de fila.
 * Mensajes de éxito y error para cada operación.
 * Listado público paginado.
+* Control público de ventas en `/ventas/`, con búsqueda por ID, RUT, cliente o producto.
+* Vista de detalle de cada venta con cliente, productos, cantidades, subtotales y total.
+* API REST protegida con JWT para productos, clientes, ventas y detalles de venta.
+* Cliente web consumidor en `/cliente-api/`, con autenticación JWT y encabezado Bearer.
 
 ### Django Admin
 
@@ -120,6 +124,24 @@ Para demostrar el flujo completo:
 6. Intentar vender más stock y mostrar el error de validación.
 7. Exportar ventas seleccionadas y abrir `ventas.csv`.
 8. Abrir el reporte de ventas y consultar un rango de fechas.
+9. Abrir `/ventas/` para consultar el historial público y entrar al detalle de una venta.
+
+## API REST
+
+La API se encuentra bajo `/api/`:
+
+* `POST /api/token/` obtiene tokens enviando `username` y `password`.
+* `POST /api/token/refresh/` renueva el access token.
+* `/api/productos/`, `/api/clientes/`, `/api/ventas/` y `/api/detalles-venta/`
+  exponen operaciones CRUD protegidas.
+* Las peticiones protegidas deben incluir `Authorization: Bearer <access_token>`.
+* El cliente web demostrativo está disponible en `/cliente-api/`.
+* Para un cliente externo, configura `CORS_ALLOWED_ORIGINS` con sus orígenes
+  explícitos, por ejemplo `http://localhost:3000,https://tu-cliente.example`.
+
+En producción, la URL pública base es `https://control-venta-tshi.vercel.app/`;
+por ejemplo, el endpoint de productos es
+`https://control-venta-tshi.vercel.app/api/productos/`.
 
 ## Autor
 

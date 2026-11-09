@@ -1,0 +1,103 @@
+{% extends 'ventas/base.html' %}
+
+{% block title %}Cliente API | Control de Ventas{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">Cliente consumidor</span>
+    <h1>Panel API REST</h1>
+    <p>Cliente web que obtiene un JWT y consulta productos y ventas protegidos por la API.</p>
+  </div>
+</div>
+
+<div id="api-status" class="api-status" role="status">Ingresa tus credenciales para conectarte.</div>
+<form id="api-login" class="form-card">
+  <label for="api-username">Usuario</label>
+  <input id="api-username" name="username" autocomplete="username" required>
+  <label for="api-password">Contraseña</label>
+  <input id="api-password" name="password" type="password" autocomplete="current-password" required>
+  <button class="btn btn-primary" type="submit">Obtener token y cargar datos</button>
+</form>
+
+<section id="api-data" hidden>
+  <div class="page-heading">
+    <div><h2>Datos recibidos desde la API</h2></div>
+    <button id="api-logout" class="btn btn-cancel" type="button">Cerrar sesión API</button>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead><tr><th colspan="4">Productos</th></tr><tr><th>ID</th><th>Nombre</th><th>Código</th><th>Stock</th></tr></thead>
+      <tbody id="api-products"></tbody>
+    </table>
+  </div>
+  <div class="table-card sales-detail-table">
+    <table>
+      <thead><tr><th colspan="4">Ventas</th></tr><tr><th>ID</th><th>Cliente</th><th>Fecha</th><th>Total</th></tr></thead>
+      <tbody id="api-sales"></tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+  const tokenKey = "controlVentasAccessToken";
+  const statusBox = document.getElementById("api-status");
+  const login = document.getElementById("api-login");
+  const data = document.getElementById("api-data");
+  const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+  }[char]));
+
+  async function apiRequest(path) {
+    const response = await fetch(path, {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem(tokenKey)}` }
+    });
+    if (!response.ok) throw new Error(`La API respondió con HTTP ${response.status}.`);
+    return response.json();
+  }
+
+  async function loadApiData() {
+    const [products, sales] = await Promise.all([
+      apiRequest("/api/productos/"),
+      apiRequest("/api/ventas/")
+    ]);
+    document.getElementById("api-products").innerHTML = products.map((product) =>
+      `<tr><td>${escapeHtml(product.id)}</td><td>${escapeHtml(product.nombre)}</td><td>${escapeHtml(product.sku || product.codigo)}</td><td>${escapeHtml(product.stock)}</td></tr>`
+    ).join("") || '<tr><td colspan="4">No hay productos.</td></tr>';
+    document.getElementById("api-sales").innerHTML = sales.map((sale) =>
+      `<tr><td>#${escapeHtml(sale.id)}</td><td>${escapeHtml(sale.cliente)}</td><td>${escapeHtml(sale.fecha)}</td><td>$${escapeHtml(sale.total)}</td></tr>`
+    ).join("") || '<tr><td colspan="4">No hay ventas.</td></tr>';
+    login.hidden = true;
+    data.hidden = false;
+    statusBox.textContent = "Conectado: datos cargados usando Authorization Bearer.";
+  }
+
+  login.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    statusBox.textContent = "Autenticando...";
+    try {
+      const response = await fetch("/api/token/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: document.getElementById("api-username").value,
+          password: document.getElementById("api-password").value
+        })
+      });
+      if (!response.ok) throw new Error("Usuario o contraseña incorrectos.");
+      const result = await response.json();
+      sessionStorage.setItem(tokenKey, result.access);
+      await loadApiData();
+    } catch (error) {
+      statusBox.textContent = error.message;
+    }
+  });
+
+  document.getElementById("api-logout").addEventListener("click", () => {
+    sessionStorage.removeItem(tokenKey);
+    data.hidden = true;
+    login.hidden = false;
+    statusBox.textContent = "Sesión API cerrada.";
+  });
+</script>
+{% endblock %}
