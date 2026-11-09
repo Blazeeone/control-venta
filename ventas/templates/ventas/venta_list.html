@@ -44,7 +44,7 @@
         <td>Venta #{{ venta.pk }}</td>
         <td>{{ venta.fecha|date:"d/m/Y H:i" }}</td>
         <td>{{ venta.cliente.nombre|default:"Boleta" }}<br><small>{{ venta.cliente.rut }}</small></td>
-        <td>{% if venta.anulada %}Anulada{% else %}Registrada{% endif %}</td>
+        <td><span class="status-badge {% if venta.anulada %}status-cancelled{% endif %}">{% if venta.anulada %}Anulada{% else %}Registrada{% endif %}</span></td>
         <td>${{ venta.total|floatformat:0 }}</td>
         <td><a href="{% url 'venta_detail' venta.pk %}" class="btn btn-primary">Ver detalle</a></td>
       </tr>

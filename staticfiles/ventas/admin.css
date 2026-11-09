@@ -762,3 +762,59 @@ input[type="submit"]:hover,
   }
 
 }
+
+/* Interaction polish for the internal workspace. */
+body {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(116, 95, 255, .13), transparent 30rem),
+    var(--admin-page);
+}
+
+#content {
+  animation: admin-rise-in .45s ease both;
+}
+
+.module,
+.submit-row,
+#changelist,
+#toolbar,
+#changelist-filter {
+  border-radius: 14px;
+}
+
+.module,
+.submit-row,
+#changelist {
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.module:hover,
+#changelist:hover {
+  border-color: rgba(157, 146, 255, .3);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .28);
+}
+
+#nav-sidebar a,
+#user-tools a,
+.breadcrumbs a {
+  transition: color .2s ease, background .2s ease;
+}
+
+#nav-sidebar a:hover {
+  background: var(--admin-accent-soft);
+  border-radius: 7px;
+}
+
+@keyframes admin-rise-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
