@@ -502,23 +502,71 @@ input[type="submit"]:hover,
 }
 
 .messagelist li {
+  align-items: flex-start;
+  background-image: none !important;
   border-radius: 10px;
+  display: flex;
+  font-size: 0.96rem;
+  font-weight: 600;
+  line-height: 1.45;
+  list-style: none;
+  margin-bottom: 12px;
+  min-height: 0;
+  padding: 14px 18px !important;
   box-shadow: var(--admin-shadow);
 }
 
+.messagelist li::before {
+  background: none !important;
+  content: none !important;
+  display: none !important;
+}
+
 .messagelist .success {
-  background: #1d3b32;
-  color: #9ce8c8;
+  background: #173d34;
+  border: 1px solid #2e8b70;
+  color: #b8f5dd;
 }
 
 .messagelist .warning {
-  background: #41361d;
-  color: #ffe09a;
+  background: #463719;
+  border: 1px solid #a58136;
+  color: #ffeab0;
 }
 
 .messagelist .error {
-  background: #482631;
-  color: #ffb3c0;
+  background: #4a2632;
+  border: 1px solid #a84c65;
+  color: #ffc2cc;
+}
+
+#changelist-form .actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+#changelist-form .actions label {
+  color: var(--admin-text-muted);
+  font-weight: 600;
+}
+
+#changelist-form .actions select {
+  min-width: 250px;
+}
+
+#changelist-form .actions button,
+#changelist-form .actions input[type="submit"] {
+  background: var(--admin-accent);
+  border-color: var(--admin-accent);
+  color: #ffffff;
+  min-height: 38px;
+}
+
+#changelist-form .actions button:hover,
+#changelist-form .actions input[type="submit"]:hover {
+  background: var(--admin-accent-hover);
 }
 
 /* Keep the dashboard and changelists visually quiet and uniform. */

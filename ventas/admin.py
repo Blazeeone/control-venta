@@ -74,6 +74,7 @@ class ProductoAdmin(admin.ModelAdmin):
     list_filter = ("activo", StockBajoFilter)
     ordering = ("nombre",)
     list_per_page = 25
+    actions = ("delete_selected",)
     autocomplete_fields = ()
     fieldsets = (
         ("Datos básicos", {"fields": ("nombre", "sku", "codigo", "precio")}),
@@ -91,6 +92,7 @@ class ClienteAdmin(admin.ModelAdmin):
         ("Cliente habitual", {"fields": ("habitual",)}),
     )
     list_per_page = 25
+    actions = ("delete_selected",)
 
 
 class DetalleVentaInlineFormSet(BaseInlineFormSet):

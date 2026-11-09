@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -68,6 +70,8 @@ class DetalleVenta(models.Model):
 
     @property
     def subtotal(self):
+        if self.cantidad is None or self.precio_unitario is None:
+            return Decimal("0.00")
         return self.cantidad * self.precio_unitario
 
     def __str__(self):

@@ -56,7 +56,16 @@ python manage.py createsuperuser
 python manage.py collectstatic --noinput
 ```
 
-8. Levantar el servidor:
+8. Cargar datos de demostración opcionales:
+
+```powershell
+python manage.py cargar_datos_demo
+```
+
+El comando es seguro de repetir: identifica productos por SKU y clientes por
+RUT, por lo que actualiza los datos demo sin crear duplicados.
+
+9. Levantar el servidor:
 
 ```powershell
 python manage.py runserver
@@ -111,13 +120,6 @@ ocasionales, actualización de stock, subtotal, validación del inline y CSV.
 
 Los logs de Django se envían a la salida estándar, que queda disponible en los
 logs operativos de Vercel.
-
-> **Google AI Studio:** este proyecto es un backend Django/Python. Si el entorno
-> de exportación muestra `pip3: executable file not found in $PATH`, no es un
-> error de la aplicación: ese entorno no incluye el comando `pip3`. Usa AI
-> Studio para el frontend y despliega este backend en Vercel, que detecta
-> `requirements.txt` automáticamente. En un entorno Python, instala con
-> `python -m pip install -r requirements.txt` (o `python3 -m pip ...` en Linux).
 
 ## Presentación de resultados
 

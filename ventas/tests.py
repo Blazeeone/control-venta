@@ -216,6 +216,11 @@ class ControlVentaTests(TestCase):
         self.assertFalse(formset.is_valid())
         self.assertIn("Stock insuficiente", str(formset.non_form_errors()))
 
+    def test_detalle_nuevo_muestra_subtotal_cero_sin_datos(self):
+        detalle = DetalleVenta()
+
+        self.assertEqual(detalle.subtotal, Decimal("0.00"))
+
     def test_exportar_ventas_csv_contiene_columnas_y_total(self):
         venta = Venta.objects.create(cliente=self.cliente)
         DetalleVenta.objects.create(
