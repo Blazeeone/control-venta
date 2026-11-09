@@ -19,6 +19,8 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+img, svg, video { max-width: 100%; }
+button, input, select, textarea { max-width: 100%; }
 body {
   background:
     radial-gradient(circle at 8% 0%, rgba(116, 95, 255, .17), transparent 31rem),
@@ -93,6 +95,7 @@ p { color: var(--muted); margin: 0 0 20px; }
   box-shadow: var(--shadow);
 }
 .table-card { animation: rise-in .6s .08s ease both; overflow-x: auto; }
+.table-card table { min-width: 680px; }
 table { border-collapse: collapse; width: 100%; }
 th, td { padding: 17px 20px; text-align: left; white-space: nowrap; }
 th { background: rgba(255,255,255,.035); color: var(--muted); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
@@ -168,15 +171,27 @@ input[type="checkbox"] { accent-color: var(--primary); margin: 0 8px 0 0; width:
 .pagination a:hover { border-color: var(--primary); color: var(--primary-hover); }
 @keyframes rise-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+@media (max-width: 900px) {
+  header { padding-left: 20px; padding-right: 20px; }
+  nav { max-width: 100%; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+  nav a { flex: 0 0 auto; }
+  .page-shell { padding-left: 20px; padding-right: 20px; }
+}
 @media (max-width: 680px) {
-  header { align-items: flex-start; flex-direction: column; gap: 15px; }
-  nav { flex-wrap: wrap; }
-  nav a { padding: 8px 10px; }
+  header { align-items: stretch; flex-direction: column; gap: 14px; }
+  nav { gap: 3px; margin-right: -4px; }
+  nav a { min-height: 44px; padding: 10px 11px; }
   .page-heading { align-items: flex-start; flex-direction: column; }
-  .page-shell { padding-top: 40px; }
-  .form-card { padding: 23px; }
+  .page-shell { padding: 40px 16px 64px; }
+  .form-card, .product-summary, .detail-card, .danger-card { padding: 22px 18px; }
+  .page-heading .btn { width: 100%; }
   .search-row { align-items: stretch; flex-direction: column; }
   .search-row input { width: 100%; }
+  .search-row .btn { text-align: center; width: 100%; }
   .summary-grid, .detail-card { grid-template-columns: 1fr; }
-  th, td { padding: 14px; }
+  th, td { padding: 14px 12px; }
+  .table-card { border-radius: 14px; }
+  .table-card .btn { min-height: 40px; }
+  .pagination { flex-wrap: wrap; }
+  input, select, textarea, .btn { min-height: 44px; }
 }

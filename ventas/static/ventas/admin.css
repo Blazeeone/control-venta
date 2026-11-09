@@ -772,6 +772,7 @@ body {
 
 #content {
   animation: admin-rise-in .45s ease both;
+  min-width: 0;
 }
 
 .module,
@@ -816,5 +817,73 @@ body {
   *::after {
     animation-duration: .01ms !important;
     transition-duration: .01ms !important;
+  }
+}
+
+@media (max-width: 767px) {
+  #header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  #user-tools {
+    flex-wrap: wrap;
+    font-size: .82rem;
+  }
+
+  #content-main,
+  #content-related {
+    min-width: 0;
+  }
+
+  #changelist,
+  .inline-group,
+  .module {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  #changelist table,
+  .inline-group table {
+    min-width: 680px;
+  }
+
+  .object-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .object-tools li {
+    margin: 0;
+  }
+
+  .object-tools a,
+  .addlink,
+  .changelink,
+  .deletelink,
+  button,
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 42px;
+  }
+}
+
+@media (max-width: 480px) {
+  #content {
+    padding: 16px 12px;
+  }
+
+  #site-name a {
+    font-size: .98rem;
+  }
+
+  .dashboard .app-list {
+    display: block;
+  }
+
+  .dashboard .app-list .module {
+    margin-bottom: 14px;
   }
 }
